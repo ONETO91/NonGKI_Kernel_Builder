@@ -4,7 +4,15 @@ on:
   workflow_dispatch:
   
     inputs:
-      CONFIG_FILE:
+      devices:
+        description: '选择机型/版本'
+        required: true
+        default: 'oneplus9pro-u14'
+        type: choice
+        options: 
+        - 'oneplus9pro'
+
+      versions:
         description: '选择机型/版本'
         required: true
         default: 'oneplus9pro'
