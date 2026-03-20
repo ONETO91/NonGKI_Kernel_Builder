@@ -1,33 +1,27 @@
-name: NonGKI Kernel Builder
+name: 非GKI内核构建工具
 
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+  
+    inputs:
+      CONFIG_FILE:
+        description: '选择机型/版本'
+        required: true
+        default: 'oneplus9pro'
+        type: choice
+        options: 
+        - 'oneplus9pro'
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
+    name: Build Kernel by ${{ github.actor }}
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    env:
+      CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
+      CCACHE_NOHASHDIR: "true"
+      CCACHE_HARDLINK: "true"
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
-
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+    - uses: actions/checkout@v4
+    - name: Prepare Configuration
+      run: |
+        CONFIG_ENV1=$(cat config-op9r.env | grep -w "CONFIG_ENV" | head -n 1 | cut -d "=" -f 2)
